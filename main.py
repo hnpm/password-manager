@@ -56,6 +56,25 @@ def generate_password():
     pyperclip.copy(password)
 
 
+def search():
+    website = website_entry.get()
+    if len(website) == 0:
+        messagebox.showinfo(title="Error", message="Please enter the website.")
+        return
+
+    try:
+        with open("data.json") as file:
+            data = json.load(file)
+            if website in data:
+                email = data[website]['email']
+                password = data[website]['password']
+                messagebox.showinfo(title=website, message=f"Email: {email}\nPassword: {password}")
+            else:
+                messagebox.showinfo(title=website, message=f"No password for {website} exists.")
+    except FileNotFoundError:
+        messagebox.showinfo(title=website, message=f"No details for {website} exists.")
+
+
 window = Tk()
 window.title("Password Manager")
 window.config(padx=50, pady=50)
@@ -67,8 +86,8 @@ canvas.grid(column=1, row=0)
 
 website_label = Label(text="Website:")
 website_label.grid(column=0, row=1)
-website_entry = Entry(width=35)
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = Entry(width=21)
+website_entry.grid(column=1, row=1)
 website_entry.focus()
 
 email_label = Label(text="Email/Username:")
@@ -87,5 +106,8 @@ password_button.grid(column=2, row=3)
 
 add_button = Button(text="Add", width=36, command=save)
 add_button.grid(column=1, row=4, columnspan=2)
+
+search_button = Button(text="Search", width=13, command=search)
+search_button.grid(column=2, row=1)
 
 window.mainloop()
